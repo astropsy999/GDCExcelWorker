@@ -33,11 +33,11 @@ def setup_logger():
     with open(log_filename, 'r+', encoding='utf-8') as file:
         # Чтение существующего содержимого файла
         existing_log_content = file.read()
-        # Сброс позиции курсора в начало файла
-        file.seek(0)
+        # # Сброс позиции курсора в начало файла
+        # file.seek(0)
 
         # Настройка логгера для дописывания новой информации вверху файла
-        logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filemode='r+')
+        logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
         # Пишем новые логи в лог-файл
         logging.info("New log entry")
