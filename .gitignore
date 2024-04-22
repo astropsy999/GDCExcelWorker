@@ -2,4 +2,5 @@
 /dist
 /oen
 /rgf
+/__pycache__
 GDCExcelWorker.spec
