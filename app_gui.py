@@ -24,7 +24,6 @@ def on_process_button_click():
 
     # Проверяем, какую опцию выбрал пользователь (РГФ или ОЭН)
     selected_option = option_var.get()
-    print("🚀 ~ selected_option:", selected_option)
 
     if selected_option == "RGF":
         # Обработка с опцией РГФ
