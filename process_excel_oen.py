@@ -4,45 +4,9 @@ import re
 from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
 from datetime import datetime
+from helpers import find_table_start, find_table_end, insert_column_in_range, insert_and_merge_column
 
-def is_date_time_format(cell_value):
-    """
-    Определяет, является ли значение ячейки строкой в формате даты 'YYYY-MM-DD HH:MM:SS'.
-
-    Параметры:
-        cell_value: Значение ячейки, которое необходимо проверить.
-
-    Возвращает:
-        True, если строка соответствует формату 'YYYY-MM-DD HH:MM:SS', иначе False.
-    """
-    date_time_format = '%Y-%m-%d %H:%M:%S'
-
-    try:
-        # Попытка разобрать строку как дату и время в указанном формате
-        datetime.strptime(cell_value, date_time_format)
-        return True
-    except ValueError:
-        # Если возникло исключение, значит строка не соответствует формату
-        return False
-
-def replace_formulas_with_values(sheet):
-    """
-    Функция заменяет формулы в ячейках их текущими значениями.
-    """
-    for row in sheet.iter_rows():
-
-        for cell in row:
-            cell_address = cell.coordinate
-
-            formula = cell.value
-            # value = cell.calculate(formula)
-            if isinstance(formula, str) and formula.startswith('='):
-                # Заменяем формулу текущим значением ячейки
-
-                print('Формула', formula)
-                print('Тип адреса', type(cell_address))
-
-def process_excel_file_oen(file_path, installation_name, control_date):
+def process_excel_file_oen(file_path, installation_name):
     # Открываем файл Excel
     workbook = load_workbook(file_path)
     logging.info(f'----- НАЧАЛО ОБРАБОТКИ ФАЙЛА: {os.path.basename(file_path)} -----')
@@ -52,27 +16,21 @@ def process_excel_file_oen(file_path, installation_name, control_date):
     sheet = workbook['УЗТ (коркарта)']
     logging.info('Доступ к листу "УЗТ (коркарта)"')
 
-    start_row = 19
-    end_row = 256
+    start_row = find_table_start(sheet)
+    logging.info(f'Первая строка таблицы Результаты контроля: {start_row}')
+    end_row = find_table_end(sheet)
+    logging.info(f'Последняя строка таблицы Результаты контроля: {end_row}')
+
     col_index = 2
 
-     # Вставляем новый столбец в диапазоне строк
-    for row in range(end_row, start_row - 1, -1):
-        # Сдвигаем значения в ячейках в строке вправо
-        for col in range(sheet.max_column, col_index - 1, -1):
-            # Копируем значение и стиль ячейки на одну колонку вправо
-            source_cell = sheet.cell(row=row, column=col)
-            target_cell = sheet.cell(row=row, column=col + 1)
-            target_cell.value = source_cell.value
-            target_cell._style = source_cell._style
 
-        # Удаляем значение и стиль ячейки в вставляемом столбце
-        source_cell = sheet.cell(row=row, column=col_index)
-        source_cell.value = None
-        source_cell._style = sheet.cell(row=row, column=col_index + 1)._style
+    # Вставляем новый столбец в диапазоне строк
+    insert_column_in_range(sheet, col_index, 15, 17)
+
+    # insert_and_merge_column(sheet, col_index)
 
     # Сохраняем изменения
-    workbook.save(file_path + '_new.xlsx')
+    workbook.save(file_path + "_new.xlsx")
 
     return
     # replace_formulas_with_values(sheet)

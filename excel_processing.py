@@ -28,12 +28,12 @@ def process_all_files(directory, installation_name, control_date, option):
         if option == "RGF":
             process_excel_file_rgf(file_path, installation_name, control_date)
         elif option == "OEN":
-            process_excel_file_oen(file_path, installation_name, control_date)
+            process_excel_file_oen(file_path, installation_name)
         else:
             continue  # Пропускаем файлы, если опция не указана
-
+    return        
         # Увеличиваем счетчик обработанных файлов
-        processed_count += 1
+    processed_count += 1
 
     # Логирование итогов
     logging.info(f'Обработано {processed_count} файлов.')

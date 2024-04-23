@@ -11,19 +11,19 @@ def on_process_button_click():
     # Получаем введенные пользователем данные
     installation_name = installation_name_entry.get()
     control_date = control_date_entry.get()
+     # Проверяем, какую опцию выбрал пользователь (РГФ или ОЭН)
+    selected_option = option_var.get()
 
-    # Проверяем формат даты
-    try:
-        datetime.strptime(control_date, '%d.%m.%Y')
-    except ValueError:
-        messagebox.showerror("Ошибка", "Неправильный формат даты. Используйте формат DD.MM.YYYY")
-        return
+    if selected_option == "RGF":
+        # Проверяем формат даты
+        try:
+            datetime.strptime(control_date, '%d.%m.%Y')
+        except ValueError:
+            messagebox.showerror("Ошибка", "Неправильный формат даты. Используйте формат DD.MM.YYYY")
+            return
 
     # Указываем путь к папке с файлами
     directory = os.getcwd()
-
-    # Проверяем, какую опцию выбрал пользователь (РГФ или ОЭН)
-    selected_option = option_var.get()
 
     if selected_option == "RGF":
         # Обработка с опцией РГФ
