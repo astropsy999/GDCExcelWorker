@@ -5,6 +5,8 @@ from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
 from datetime import datetime
 from helpers import find_table_start, find_table_end, insert_column_in_range, insert_and_merge_column
+import pandas as pd
+
 
 def process_excel_file_oen(file_path, installation_name):
     # Открываем файл Excel
@@ -25,7 +27,19 @@ def process_excel_file_oen(file_path, installation_name):
 
 
     # Вставляем новый столбец в диапазоне строк
-    insert_column_in_range(sheet, col_index, 15, 17)
+    insert_column_in_range(sheet, col_index, start_row, end_row)
+
+
+
+    # Загружаем файл Excel с помощью pandas
+    df = pd.read_excel(file_path, sheet_name='УЗТ (коркарта)')
+
+    # Вставляем новый столбец после столбца A
+    df.insert(1, 'Новый столбец', None)
+
+    # Добавляем значение в ячейку на строках 15-17
+    df.loc[15:17, 'Новый столбец'] = "Новый столбец"
+
 
     # insert_and_merge_column(sheet, col_index)
 
