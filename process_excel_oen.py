@@ -3,85 +3,81 @@ import os
 import re
 from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
-import xlwings as xw
+from datetime import datetime
+
+def is_date_time_format(cell_value):
+    """
+    Определяет, является ли значение ячейки строкой в формате даты 'YYYY-MM-DD HH:MM:SS'.
+
+    Параметры:
+        cell_value: Значение ячейки, которое необходимо проверить.
+
+    Возвращает:
+        True, если строка соответствует формату 'YYYY-MM-DD HH:MM:SS', иначе False.
+    """
+    date_time_format = '%Y-%m-%d %H:%M:%S'
+    
+    try:
+        # Попытка разобрать строку как дату и время в указанном формате
+        datetime.strptime(cell_value, date_time_format)
+        return True
+    except ValueError:
+        # Если возникло исключение, значит строка не соответствует формату
+        return False
+
+def replace_formulas_with_values(sheet):
+    """
+    Функция заменяет формулы в ячейках их текущими значениями.
+    """
+    for row in sheet.iter_rows():
+        
+        for cell in row:
+            cell_address = cell.coordinate
+            
+            formula = cell.value
+            # value = cell.calculate(formula)
+            if isinstance(formula, str) and formula.startswith('='):
+                # Заменяем формулу текущим значением ячейки
+                
+                print('Формула', formula)
+                print('Тип адреса', type(cell_address))
 
 def process_excel_file_oen(file_path, installation_name, control_date):
     # Открываем файл Excel
-    # workbook = load_workbook(file_path)
-    # logging.info(f'----- НАЧАЛО ОБРАБОТКИ ФАЙЛА: {os.path.basename(file_path)} -----')
-    # logging.info(f'Загружен файл Excel: {file_path}')
-    
-    # # Доступ к листу "УЗТ (коркарта)"
-    # sheet = workbook['УЗТ (коркарта)']
-    # logging.info('Доступ к листу "УЗТ (коркарта)"')
-
-    # # Получаем ячейку L5
-    # cell_L5 = sheet['L5']
-
-    # # Получаем значение ячейки L5
-    # value_L5 = cell_L5.value
-    # logging.info(f'Значение ячейки L5: {value_L5}')
-
-    # # Если значение в ячейке L5 является формулой, извлекаем адрес ячейки, на которую она ссылается
-    # if isinstance(value_L5, str) and value_L5.startswith('='):
-    #     sheet.insert_cols(2)
-    #     logging.info(f'ДОБАВЛЯЕМ НОВЫЙ СТОЛБЕЦ ПЕРЕД B!')
-
-    # else:
-    #     # Если L5 не содержит формулы или значение равно None
-    #     # Проверяем, скрыт ли столбец A
-    #     if sheet.column_dimensions['A'].hidden:
-    #         logging.info(f'Cтолбец A скрыт!')
-    #         # Показываем столбец A
-    #         sheet.column_dimensions['A'].hidden = False
-    #         logging.info(f'Показываем столбец A')
-    
-    # # Сохраняем файл
-    # workbook.save(file_path)
-    # logging.info(f'Файл {file_path} успешно сохранен')        
-       
-      # Открываем книгу Excel с помощью xlwings
-    app = xw.App(visible=False)  # Запускаем приложение Excel в фоновом режиме
-    workbook = app.books.open(file_path)
+    workbook = load_workbook(file_path)
     logging.info(f'----- НАЧАЛО ОБРАБОТКИ ФАЙЛА: {os.path.basename(file_path)} -----')
     logging.info(f'Загружен файл Excel: {file_path}')
-
+    
     # Доступ к листу "УЗТ (коркарта)"
-    sheet = workbook.sheets['УЗТ (коркарта)']
+    sheet = workbook['УЗТ (коркарта)']
     logging.info('Доступ к листу "УЗТ (коркарта)"')
-
+    # replace_formulas_with_values(sheet)
+    # logging.info('Формулы заменены значениями')
+    # return 
     # Получаем ячейку L5
-    cell_L5 = sheet.range('L5')
+    cell_L5 = sheet['L5']
 
     # Получаем значение ячейки L5
     value_L5 = cell_L5.value
     logging.info(f'Значение ячейки L5: {value_L5}')
 
-    # Если значение в ячейке L5 является формулой, вставляем новый столбец перед B
     if isinstance(value_L5, str) and value_L5.startswith('='):
-        sheet.api.Columns("B").Insert()
+        logging.info(f'Тип ячейки L5 {type(value_L5)}')
+        sheet.insert_cols(2)
         logging.info(f'ДОБАВЛЯЕМ НОВЫЙ СТОЛБЕЦ ПЕРЕД B!')
+
     else:
         # Если L5 не содержит формулы или значение равно None
         # Проверяем, скрыт ли столбец A
-        if sheet.range('A1').api.EntireColumn.Hidden:
+        if sheet.column_dimensions['A'].hidden:
             logging.info(f'Cтолбец A скрыт!')
             # Показываем столбец A
-            sheet.range('A1').api.EntireColumn.Hidden = False
+            sheet.column_dimensions['A'].hidden = False
             logging.info(f'Показываем столбец A')
-
-    # Обновляем формулы на листе, чтобы учесть изменения
-    sheet.api.Calculate()
-    logging.info('Обновили формулы на листе после изменений')
-
+    
     # Сохраняем файл
     workbook.save(file_path)
-    logging.info(f'Файл {file_path} успешно сохранен')
-
-    # Закрываем книгу Excel
-    workbook.close()
-    app.quit()     
-            
+    logging.info(f'Файл {file_path} успешно сохранен')        
     return
     
     # if type(value_L5) == 'string':
