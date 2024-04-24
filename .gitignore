@@ -3,4 +3,5 @@
 /oen
 /rgf
 /__pycache__
+*.xlsx
 GDCExcelWorker.spec

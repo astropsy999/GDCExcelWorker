@@ -4,9 +4,8 @@ import re
 from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
 from datetime import datetime
-from helpers import find_table_start, find_table_end, insert_column_in_range, insert_and_merge_column
-import pandas as pd
-
+from helpers import find_table_start, find_table_end, insert_column_in_range
+from insert_column_xlwings import insert_column_after
 
 def process_excel_file_oen(file_path, installation_name):
     # Открываем файл Excel
@@ -27,30 +26,15 @@ def process_excel_file_oen(file_path, installation_name):
 
 
     # Вставляем новый столбец в диапазоне строк
-    insert_column_in_range(sheet, col_index, start_row, end_row)
+    # insert_column_in_range(sheet, col_index, start_row, end_row)
+    # row = 15
+    col_num = 'B'
 
-
-
-    # Загружаем файл Excel с помощью pandas
-    df = pd.read_excel(file_path, sheet_name='УЗТ (коркарта)')
-
-    # Вставляем новый столбец после столбца A
-    df.insert(1, 'Новый столбец', None)
-
-    # Добавляем значение в ячейку на строках 15-17
-    df.loc[15:17, 'Новый столбец'] = "Новый столбец"
-
-
-    # insert_and_merge_column(sheet, col_index)
-
+    insert_column_after(file_path, start_row, end_row, col_num)
     # Сохраняем изменения
-    workbook.save(file_path + "_new.xlsx")
-
-    return
-    # replace_formulas_with_values(sheet)
-    # logging.info('Формулы заменены значениями')
-    # return
-    # Получаем ячейку L5
+    # workbook.save(file_path + "_new.xlsx")
+    return 
+    
     cell_L5 = sheet['L5']
 
     # Получаем значение ячейки L5

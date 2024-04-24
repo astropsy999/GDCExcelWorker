@@ -1,4 +1,5 @@
 from openpyxl.utils import get_column_letter
+from utils import is_row_empty
 
 def insert_and_merge_column(sheet, col_index):
     """
@@ -67,8 +68,17 @@ def find_table_start(sheet):
     for row_idx, row in enumerate(sheet.iter_rows(values_only=True), start=1):
         # Проверяем, содержит ли строка текст "Результаты контроля:"
         if row and any("Результаты контроля:" in str(cell) for cell in row):
-            # Возвращаем номер следующей строки
-            return row_idx + 1
+            
+            # Проверяем, является ли следующая строка пустой
+            next_row = sheet[row_idx + 1]  # Получаем следующую строку
+            
+            is_empty = is_row_empty(next_row)
+            
+            # Возвращаем номер следующей строки, учитывая слияние
+            if is_empty:
+                return row_idx + 2
+            else:
+                return row_idx + 1
 
     # Если строка с текстом "Результаты контроля:" не найдена
     print("Не удалось найти строку с 'Результаты контроля:'")
