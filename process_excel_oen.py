@@ -21,16 +21,13 @@ def process_excel_file_oen(file_path, installation_name):
     logging.info(f'Первая строка таблицы Результаты контроля: {start_row}')
     end_row = find_table_end(sheet)
     logging.info(f'Последняя строка таблицы Результаты контроля: {end_row}')
-
-    col_index = 2
-
-
+    
     # Вставляем новый столбец в диапазоне строк
-    # insert_column_in_range(sheet, col_index, start_row, end_row)
-    # row = 15
     col_num = 'B'
 
     insert_column_after(file_path, start_row, end_row, col_num)
+    
+    
     # Сохраняем изменения
     # workbook.save(file_path + "_new.xlsx")
     return 
