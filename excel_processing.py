@@ -9,7 +9,7 @@ from process_excel_oen import process_excel_file_oen
 # Функция для получения списка всех файлов Excel в папке
 def get_excel_files(directory):
     excel_files = [file for file in os.listdir(directory) if file.lower().endswith(".xlsx")]
-    logging.info(f'Найдены файлы Excel: {excel_files}')
+    print(f'Найдены файлы Excel: {excel_files}')
     return excel_files
 
 # Объединенная функция для обработки всех файлов Excel в папке
@@ -31,42 +31,57 @@ def process_all_files(directory, installation_name, control_date, option):
             process_excel_file_oen(file_path, installation_name)
         else:
             continue  # Пропускаем файлы, если опция не указана
-    return        
         # Увеличиваем счетчик обработанных файлов
-    processed_count += 1
+        processed_count += 1
 
     # Логирование итогов
-    logging.info(f'Обработано {processed_count} файлов.')
-    
-    return
+    print(f'Обработано {processed_count} файлов.')
     
     # Создаем папку для сохранения обработанных файлов
     current_date = datetime.now().strftime("%d-%m-%Y")
     output_directory = f"Обработано_{current_date}"
+    updated_excel_files = get_excel_files(directory)
 
     # Проверяем, существует ли уже папка с таким именем
     if os.path.exists(output_directory):
         # Если папка существует
-
         # Перемещаем обработанные файлы в существующую папку
-        for file_name in excel_files:
-            src_file_path = os.path.join(directory, file_name)
-            dst_file_path = os.path.join(output_directory, file_name)
-            shutil.move(src_file_path, dst_file_path)
+        if option == "RGF":
+            for file_name in excel_files:
+                src_file_path = os.path.join(directory, file_name)
+                dst_file_path = os.path.join(output_directory, file_name)
+                shutil.move(src_file_path, dst_file_path)
+        elif option == "OEN":
+            for file_name in updated_excel_files:
+                src_file_path = os.path.join(directory, file_name)
+                dst_file_path = os.path.join(output_directory, file_name)
+                if file_name.endswith('_oen.xlsx'):
+                    shutil.move(src_file_path, dst_file_path)
+                else:
+                    os.remove(src_file_path)
 
-        logging.info(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в существующей папке "{output_directory}".')
+        print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в существующей папке "{output_directory}".')
 
     else:
         # Создаем новую папку
         os.makedirs(output_directory)
+        if option == "RGF":
+            # Перемещаем обработанные файлы в новую папку
+            for file_name in excel_files:
+                src_file_path = os.path.join(directory, file_name)
+                dst_file_path = os.path.join(output_directory, file_name)
+                shutil.move(src_file_path, dst_file_path)
+                
+        elif option == "OEN":
+            for file_name in updated_excel_files:
+                src_file_path = os.path.join(directory, file_name)
+                dst_file_path = os.path.join(output_directory, file_name)
+                if file_name.endswith('_oen.xlsx'):
+                    shutil.move(src_file_path, dst_file_path)
+                else:
+                    os.remove(src_file_path)
 
-        # Перемещаем обработанные файлы в новую папку
-        for file_name in excel_files:
-            src_file_path = os.path.join(directory, file_name)
-            dst_file_path = os.path.join(output_directory, file_name)
-            shutil.move(src_file_path, dst_file_path)
-
-        logging.info(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в новой папке "{output_directory}".')
+        print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в новой папке "{output_directory}".')
 
     return processed_count
 

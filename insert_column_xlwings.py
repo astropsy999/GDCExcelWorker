@@ -1,7 +1,7 @@
 import xlwings as xw
 import os
 
-def insert_column_after(file_path, start_range, end_range, to_insert_after):
+def insert_column_after(file_path, start_range, end_range, to_insert_after, installation_name):
     # Открываем Excel-файл с помощью xlwings
     app = xw.App(visible=False)
     try:
@@ -49,8 +49,12 @@ def insert_column_after(file_path, start_range, end_range, to_insert_after):
 
         print('Результаты вставлены в диапазон B')
         
+        sheet['E7'].value = installation_name
+        print(f'Изменено::Технологическая установка (участок): {installation_name}')
+    
+        
         # Сохраняем изменения
-        workbook.save(file_path + "_new.xlsx")
+        workbook.save(file_path +'_oen.xlsx')
     except Exception as e:
         print(f'Произошла ошибка при обработке файла: {e}')
     finally:

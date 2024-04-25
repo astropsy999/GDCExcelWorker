@@ -8,10 +8,11 @@ from excel_processing import process_all_files
 
 # Функция для запуска обработки всех файлов по нажатию кнопки
 def on_process_button_click():
-    # Получаем введенные пользователем данные
+    # Получаем введенные пользователем данные Entry
     installation_name = installation_name_entry.get()
     control_date = control_date_entry.get()
-     # Проверяем, какую опцию выбрал пользователь (РГФ или ОЭН)
+
+    # Проверяем, какую опцию выбрал пользователь (РГФ или ОЭН)
     selected_option = option_var.get()
 
     if selected_option == "RGF":
@@ -70,10 +71,24 @@ def run_app():
     ttk.Label(root, text="Введите дату контроля (ДД.ММ.ГГГГ):").grid(row=2, column=0, padx=10, pady=10)
     control_date_entry = ttk.Entry(root)
     control_date_entry.grid(row=2, column=1, padx=10, pady=10)
-
+    
     # Создаем кнопку для запуска обработки
     process_button = ttk.Button(root, text="Запустить обработку", command=on_process_button_click)
     process_button.grid(row=3, column=0, columnspan=2, pady=10)
+    
+    # Привязываем обработчик событий _onKeyRelease к главному окну приложения
+    root.bind_all("<Key>", _onKeyRelease, "+")
 
     # Запускаем главное окно приложения
     root.mainloop()
+    
+def _onKeyRelease(event):
+    ctrl  = (event.state & 0x4) != 0
+    if event.keycode == 88 and ctrl and event.keysym.lower() != "x":
+        event.widget.event_generate("<<Cut>>")
+
+    if event.keycode == 86 and ctrl and event.keysym.lower() != "v":
+        event.widget.event_generate("<<Paste>>")
+
+    if event.keycode == 67 and ctrl and event.keysym.lower() != "c":
+        event.widget.event_generate("<<Copy>>")    
