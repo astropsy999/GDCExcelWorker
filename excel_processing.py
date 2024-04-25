@@ -66,10 +66,11 @@ def process_all_files(directory, installation_name, control_date, option):
             for file_name in updated_excel_files:
                 src_file_path = os.path.join(directory, file_name)
                 dst_file_path = os.path.join(output_directory, file_name)
-                if file_name.endswith('_oen.xlsx'):
-                    shutil.move(src_file_path, dst_file_path)
-                else:
-                    os.remove(src_file_path)
+                if file_name not in skipped_files:
+                    if file_name.endswith('_oen.xlsx'):
+                        shutil.move(src_file_path, dst_file_path)
+                    else:
+                        os.remove(src_file_path)
 
         print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в существующей папке "{output_directory}".')
 
@@ -88,10 +89,11 @@ def process_all_files(directory, installation_name, control_date, option):
             for file_name in updated_excel_files:
                 src_file_path = os.path.join(directory, file_name)
                 dst_file_path = os.path.join(output_directory, file_name)
-                if file_name.endswith('_oen.xlsx'):
-                    shutil.move(src_file_path, dst_file_path)
-                else:
-                    os.remove(src_file_path)
+                if file_name not in skipped_files:
+                    if file_name.endswith('_oen.xlsx'):
+                        shutil.move(src_file_path, dst_file_path)
+                    else:
+                        os.remove(src_file_path)
 
         print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в новой папке "{output_directory}".')
 

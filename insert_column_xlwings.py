@@ -1,5 +1,5 @@
 import xlwings as xw
-import os
+from utils import bcolors
 
 def insert_column_after(file_path, start_range, end_range, to_insert_after, installation_name):
     # Открываем Excel-файл с помощью xlwings
@@ -8,9 +8,13 @@ def insert_column_after(file_path, start_range, end_range, to_insert_after, inst
         workbook = app.books.open(file_path)
         
         # Доступ к листу "УЗТ (коркарта)"
-        sheet = workbook.sheets['УЗТ (коркарта)']
-        print(f'----- НАЧАЛО ОБРАБОТКИ ФАЙЛА: {os.path.basename(file_path)} -----')
-        print(f'Загружен файл Excel: {file_path}')
+        try:
+            sheet = workbook.sheets['УЗТ (коркарта)']
+            print('Доступ к листу "УЗТ (коркарта)"')
+        except KeyError:
+            raise KeyError(f'{bcolors.FAIL} Лист "УЗТ (коркарта)" отсутствует в файле {file_path}.{bcolors.ENDC}')    
+        # print(f'----- НАЧАЛО ОБРАБОТКИ ФАЙЛА: {os.path.basename(file_path)} -----')
+        # print(f'Загружен файл Excel: {file_path}')
         
         # Определяем диапазон для вставки столбца после указанного столбца
         range_to_insert = sheet.range(f'{to_insert_after}{start_range}:{to_insert_after}{end_range}')
