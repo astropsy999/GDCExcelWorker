@@ -4,4 +4,7 @@
 /rgf
 /__pycache__
 *.xlsx
+.idea/
+.vscode/
+.venv/
 GDCExcelWorker.spec
