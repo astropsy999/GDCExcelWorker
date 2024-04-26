@@ -13,8 +13,6 @@ def insert_column_after(file_path, start_range, end_range, to_insert_after, inst
             print('Доступ к листу "УЗТ (коркарта)"')
         except KeyError:
             raise KeyError(f'{bcolors.FAIL} Лист "УЗТ (коркарта)" отсутствует в файле {file_path}.{bcolors.ENDC}')    
-        # print(f'----- НАЧАЛО ОБРАБОТКИ ФАЙЛА: {os.path.basename(file_path)} -----')
-        # print(f'Загружен файл Excel: {file_path}')
         
         # Определяем диапазон для вставки столбца после указанного столбца
         range_to_insert = sheet.range(f'{to_insert_after}{start_range}:{to_insert_after}{end_range}')
@@ -43,11 +41,15 @@ def insert_column_after(file_path, start_range, end_range, to_insert_after, inst
         # Создайте массив для результатов
         results = []
 
-        # Вычислите результаты для каждого элемента
         for a, c in zip(a_values, c_values):
-            if a is not None:
-                results.append(f"{a}.{c}.")
-
+            if a is not None and c is not None:# Округляем значения a и c до ближайшего целого числа
+                rounded_a = round(a) if isinstance(a, float) else a
+                rounded_c = round(c) if isinstance(c, float) else c
+                
+                # Формируем строку результата с округленными значениями
+                results.append(f"{rounded_a}.{rounded_c}.")
+        
+        
         # Вы должны использовать диапазон для столбца B
         sheet.range(f"B{start_range + 4}:B{end_range}").options(transpose=True).value = results
 

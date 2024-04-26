@@ -30,6 +30,7 @@ def copy_values_and_insert_formula(sheet, start_row, end_row):
 
     # Вставляем формулу в столбец B
     for row in range(start, end_row + 1):
+        
         # Создаем формулу для объединения значений из столбца A и C
         formula = f'=CONCATENATE(A{row}, ".", C{row}, ".")'
         

@@ -43,7 +43,7 @@ def process_excel_file_oen(file_path, installation_name):
             print(f'Проверка значения даты: {date_value}')
             
             if not pattern.match(date_value):
-                print(f'Дата не соответствует формату DD.MM.YYYY!')
+                print(f'{bcolors.WARNING}Дата не соответствует формату DD.MM.YYYY!{bcolors.ENDC}')
                 sheet['M5'].value = date_value.replace("г.", "")
                 print(f'Формат даты изменен!')
 

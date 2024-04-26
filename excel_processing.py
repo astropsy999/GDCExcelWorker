@@ -1,10 +1,10 @@
 import os
-import logging
 from datetime import datetime
 import shutil
 from process_excel_rgf import process_excel_file_rgf
 from process_excel_oen import process_excel_file_oen
 from utils import bcolors
+import time
 
 
 # Функция для получения списка всех файлов Excel в папке
@@ -70,6 +70,7 @@ def process_all_files(directory, installation_name, control_date, option):
                     if file_name.endswith('_oen.xlsx'):
                         shutil.move(src_file_path, dst_file_path)
                     else:
+                        time.sleep(0.5)
                         os.remove(src_file_path)
 
         print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в существующей папке "{output_directory}".')
@@ -93,6 +94,7 @@ def process_all_files(directory, installation_name, control_date, option):
                     if file_name.endswith('_oen.xlsx'):
                         shutil.move(src_file_path, dst_file_path)
                     else:
+                        time.sleep(0.5)
                         os.remove(src_file_path)
 
         print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в новой папке "{output_directory}".')
