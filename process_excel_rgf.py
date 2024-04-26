@@ -40,6 +40,7 @@ def process_excel_file_rgf(file_path, installation_name, control_date):
     # Обрабатываем лист 'Диагностическая карта'
     try:
         diagnostics_sheet = workbook['Диагностическая карта']
+        print('diagnostics_sheet', diagnostics_sheet)
 
         # Устанавливаем дату контроля в L5
         diagnostics_sheet['L5'].value = control_date

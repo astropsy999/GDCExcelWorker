@@ -6,7 +6,6 @@ def insert_column_after(file_path, start_range, end_range, to_insert_after, inst
     app = xw.App(visible=False)
     try:
         workbook = app.books.open(file_path)
-        
         # Доступ к листу "УЗТ (коркарта)"
         try:
             sheet = workbook.sheets['УЗТ (коркарта)']

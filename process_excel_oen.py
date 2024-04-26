@@ -19,7 +19,6 @@ def process_excel_file_oen(file_path, installation_name):
         except KeyError:
             raise KeyError(f'{bcolors.FAIL} Лист "УЗТ (коркарта)" отсутствует в файле {file_path}.{bcolors.ENDC}')
             
-        
         # Доступ к ячейкам и обработка значений
         try:
             cell_L5 = sheet['L5']
@@ -73,8 +72,12 @@ def process_excel_file_oen(file_path, installation_name):
             # Сохраняем файл с обработанными данными
             workbook.save(file_path + '_oen.xlsx')
             print(f'Файл успешно сохранен: {file_path}')
-    
+
     except Exception as e:
         print(f'{bcolors.FAIL}Ошибка: {e}{bcolors.ENDC}')
+        
+    finally:
+        # Закрываем файл Excel в конце обработки
+        workbook.close()
 
     return

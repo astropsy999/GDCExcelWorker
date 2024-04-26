@@ -1,17 +1,10 @@
 import os
-from datetime import datetime
-import shutil
 from process_excel_rgf import process_excel_file_rgf
 from process_excel_oen import process_excel_file_oen
 from utils import bcolors
-import time
+from handle_processed_files import move_processed_files
+from utils import get_excel_files
 
-
-# Функция для получения списка всех файлов Excel в папке
-def get_excel_files(directory):
-    excel_files = [file for file in os.listdir(directory) if file.lower().endswith(".xlsx")]
-    print(f'Найдены файлы Excel: {excel_files}')
-    return excel_files
 
 # Объединенная функция для обработки всех файлов Excel в папке
 def process_all_files(directory, installation_name, control_date, option):
@@ -46,57 +39,7 @@ def process_all_files(directory, installation_name, control_date, option):
     # Логирование итогов
     print(f'Обработано {processed_count} файлов.')
     print(f'{bcolors.WARNING}Пропущены: {skipped_files}{bcolors.ENDC}')
-    # Создаем папку для сохранения обработанных файлов
-    current_date = datetime.now().strftime("%d-%m-%Y")
-    output_directory = f"Обработано_{current_date}"
-    updated_excel_files = get_excel_files(directory)
-
-    # Проверяем, существует ли уже папка с таким именем
-    if os.path.exists(output_directory):
-        # Если папка существует
-        # Перемещаем обработанные файлы в существующую папку
-        if option == "RGF":
-            for file_name in excel_files:
-                # Проверяем, что файл не пропущен
-                if file_name not in skipped_files:
-                    src_file_path = os.path.join(directory, file_name)
-                    dst_file_path = os.path.join(output_directory, file_name)
-                    shutil.move(src_file_path, dst_file_path)
-        elif option == "OEN":
-            for file_name in updated_excel_files:
-                src_file_path = os.path.join(directory, file_name)
-                dst_file_path = os.path.join(output_directory, file_name)
-                if file_name not in skipped_files:
-                    if file_name.endswith('_oen.xlsx'):
-                        shutil.move(src_file_path, dst_file_path)
-                    else:
-                        time.sleep(0.5)
-                        os.remove(src_file_path)
-
-        print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в существующей папке "{output_directory}".')
-
-    else:
-        # Создаем новую папку
-        os.makedirs(output_directory)
-        if option == "RGF":
-            # Перемещаем обработанные файлы в новую папку
-            for file_name in excel_files:
-                if file_name not in skipped_files:
-                    src_file_path = os.path.join(directory, file_name)
-                    dst_file_path = os.path.join(output_directory, file_name)
-                    shutil.move(src_file_path, dst_file_path)
-                
-        elif option == "OEN":
-            for file_name in updated_excel_files:
-                src_file_path = os.path.join(directory, file_name)
-                dst_file_path = os.path.join(output_directory, file_name)
-                if file_name not in skipped_files:
-                    if file_name.endswith('_oen.xlsx'):
-                        shutil.move(src_file_path, dst_file_path)
-                    else:
-                        time.sleep(0.5)
-                        os.remove(src_file_path)
-
-        print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в новой папке "{output_directory}".')
-
+    
+    move_processed_files(directory, option, skipped_files)
+    
     return processed_count
