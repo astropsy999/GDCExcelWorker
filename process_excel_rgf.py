@@ -35,12 +35,15 @@ def process_excel_file_rgf(file_path, installation_name, control_date):
             print('Ячейка A1 пуста, C4 установлено в None')
 
     except KeyError:
+        
         raise KeyError(f'Лист "Характеристики" отсутствует в файле')
+    finally:
+        workbook.save(file_path)
+        workbook.close()
         
     # Обрабатываем лист 'Диагностическая карта'
     try:
         diagnostics_sheet = workbook['Диагностическая карта']
-        print('diagnostics_sheet', diagnostics_sheet)
 
         # Устанавливаем дату контроля в L5
         diagnostics_sheet['L5'].value = control_date
@@ -61,10 +64,15 @@ def process_excel_file_rgf(file_path, installation_name, control_date):
         print(f'Количество строк, где была установлена формула в столбец A: {changed_rows_count}')
 
     except KeyError:
+
         raise KeyError(f'Лист "Диагностическая карта" отсутствует в файле')
+    finally:
+        workbook.save(file_path)
+        workbook.close()
     # Сохраняем файл, обрабатывая возможные ошибки
     try:
         workbook.save(file_path)
+        workbook.close()
         print(f'Файл {file_name} успешно обработан.')
     except PermissionError:
         print(f'{bcolors.FAIL}Ошибка: нет разрешения на запись в файл {file_name}.{bcolors.ENDC}')

@@ -3,6 +3,7 @@ import shutil
 import time
 from datetime import datetime
 from utils import get_excel_files
+from utils import bcolors
 
 def create_output_directory():
     """Создает папку для сохранения обработанных файлов."""
@@ -18,13 +19,6 @@ def move_files_to_directory(file_list, src_directory, dst_directory):
         src_file_path = os.path.join(src_directory, file_name)
         dst_file_path = os.path.join(dst_directory, file_name)
         shutil.move(src_file_path, dst_file_path)
-
-# def delete_files(file_list, src_directory):
-#     """Удаляет файлы из исходной директории."""
-#     for file_name in file_list:
-#         src_file_path = os.path.join(src_directory, file_name)
-#         time.sleep(3)
-#         os.remove(src_file_path)
 
 def delete_files(file_list, src_directory, max_retries=2, delay=1):
     """Удаляет файлы из исходной директории с попытками и задержкой."""
@@ -63,10 +57,11 @@ def move_processed_files(directory, option, skipped_files):
     elif option == "OEN":
         file_list = [file_name for file_name in get_excel_files(directory) if file_name not in skipped_files]
         oen_files = [file_name for file_name in file_list if file_name.endswith('_oen.xlsx')]
-        other_files = [file_name for file_name in file_list if not file_name.endswith('_oen.xlsx')]
+        other_files = [file_name for file_name in file_list if not file_name.endswith('_oen.xlsx') and file_name not in skipped_files]
 
         move_files_to_directory(oen_files, directory, output_directory)
         delete_files(other_files, directory)
     
-    print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в папке "{output_directory}".')
+    print(f'\n{bcolors.OKGREEN}ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в папке "{output_directory}"{bcolors.ENDC}.')
+    print(f'{bcolors.WARNING}Пропущены файлы: "{skipped_files}"{bcolors.ENDC}.')
 

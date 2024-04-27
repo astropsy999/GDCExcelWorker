@@ -11,6 +11,7 @@ def process_all_files(directory, installation_name, control_date, option):
     # Получить список файлов Excel
     excel_files = get_excel_files(directory)
     skipped_files = []
+    
 
     # Инициализируем счетчик обработанных файлов
     processed_count = 0
@@ -32,13 +33,11 @@ def process_all_files(directory, installation_name, control_date, option):
             
         except KeyError as e:
             skipped_files.append(file_name)
-            # Если лист не найден, пропускаем обработку текущего файла
-            print(f"{bcolors.FAIL}Пропущен файл {file_name}: ({e}){bcolors.ENDC}")
+            print(f'{bcolors.FAIL}В файле {file_name} не обнаружен необходимый лист и он будет пропущен!{bcolors.ENDC}')
             continue
 
     # Логирование итогов
-    print(f'Обработано {processed_count} файлов.')
-    print(f'{bcolors.WARNING}Пропущены: {skipped_files}{bcolors.ENDC}')
+    print(f'\n{bcolors.OKGREEN}Обработано {processed_count} файлов.{bcolors.ENDC}')
     
     move_processed_files(directory, option, skipped_files)
     

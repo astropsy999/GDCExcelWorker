@@ -18,6 +18,9 @@ def process_excel_file_oen(file_path, installation_name):
             sheet = workbook['УЗТ (коркарта)']
         except KeyError:
             raise KeyError(f'{bcolors.FAIL} Лист "УЗТ (коркарта)" отсутствует в файле {file_path}.{bcolors.ENDC}')
+        finally:
+            workbook.save(file_path)
+            workbook.close()
             
         # Доступ к ячейкам и обработка значений
         try:
@@ -26,6 +29,9 @@ def process_excel_file_oen(file_path, installation_name):
         except KeyError:
             print(f'{bcolors.FAIL}Ошибка: Не удалось получить доступ к ячейке L5 в файле {file_path}.{bcolors.ENDC}')
             return
+        finally:
+            workbook.save(file_path)
+            workbook.close()
 
         if value_L5 is not None:
             start_row = find_table_start(sheet)
@@ -36,6 +42,7 @@ def process_excel_file_oen(file_path, installation_name):
             workbook.save(file_path)
             workbook.close()
             insert_column_after(file_path, start_row, end_row, col_num, installation_name)
+            print(f'Файл успешно сохранен: {file_path}')
         
         else:
             # Проверяем значение даты
@@ -75,11 +82,12 @@ def process_excel_file_oen(file_path, installation_name):
             workbook.save(file_path + '_oen.xlsx')
             print(f'Файл успешно сохранен: {file_path}')
 
-    except Exception as e:
-        print(f'{bcolors.FAIL}Ошибка: {e}{bcolors.ENDC}')
+    except KeyError as e:
+         raise KeyError(f'{bcolors.FAIL}Ошибка: {e}{bcolors.ENDC}')
         
     finally:
         # Закрываем файл Excel в конце обработки
+        workbook.save(file_path)
         workbook.close()
 
     return
