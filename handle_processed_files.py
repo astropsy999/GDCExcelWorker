@@ -19,12 +19,39 @@ def move_files_to_directory(file_list, src_directory, dst_directory):
         dst_file_path = os.path.join(dst_directory, file_name)
         shutil.move(src_file_path, dst_file_path)
 
-def delete_files(file_list, src_directory):
-    """Удаляет файлы из исходной директории."""
+# def delete_files(file_list, src_directory):
+#     """Удаляет файлы из исходной директории."""
+#     for file_name in file_list:
+#         src_file_path = os.path.join(src_directory, file_name)
+#         time.sleep(3)
+#         os.remove(src_file_path)
+
+def delete_files(file_list, src_directory, max_retries=2, delay=1):
+    """Удаляет файлы из исходной директории с попытками и задержкой."""
     for file_name in file_list:
         src_file_path = os.path.join(src_directory, file_name)
-        time.sleep(1)
-        os.remove(src_file_path)
+        # if file_name in skipped_files:
+        #     continue
+        # Количество попыток удаления файла
+        retries = 0
+        
+        # Пытаться удалить файл несколько раз, если возникает ошибка
+        while retries < max_retries:
+            try:
+                # Попытка удалить файл
+                os.remove(src_file_path)
+                print(f'Файл {file_name} успешно удален.')
+                break  # Если успешно, прерываем цикл
+                
+            except PermissionError:
+                # Если ошибка доступа, подождите некоторое время перед следующей попыткой
+                print(f'Не удается удалить файл {file_name}. Попытка повторить через {delay} секунд.')
+                retries += 1
+                time.sleep(delay)
+        
+        # Проверяем, был ли файл успешно удален после всех попыток
+        if retries == max_retries:
+            print(f'Не удалось удалить файл {file_name} после {max_retries} попыток.')
 
 def move_processed_files(directory, option, skipped_files):
     output_directory = create_output_directory()
@@ -39,6 +66,7 @@ def move_processed_files(directory, option, skipped_files):
         other_files = [file_name for file_name in file_list if not file_name.endswith('_oen.xlsx')]
 
         move_files_to_directory(oen_files, directory, output_directory)
-       
+        delete_files(other_files, directory)
+    
     print(f'ГОТОВЫЕ ФАЙЛЫ СОХРАНЕНЫ в папке "{output_directory}".')
 

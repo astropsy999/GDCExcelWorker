@@ -33,6 +33,8 @@ def process_excel_file_oen(file_path, installation_name):
             
             # Вставляем новый столбец в диапазоне строк
             col_num = 'B'
+            workbook.save(file_path)
+            workbook.close()
             insert_column_after(file_path, start_row, end_row, col_num, installation_name)
         
         else:

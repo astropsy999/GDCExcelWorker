@@ -4,6 +4,8 @@ from datetime import datetime
 import os
 import logging
 from excel_processing import process_all_files
+from handle_processed_files import delete_files
+from utils import get_excel_files
 
 
 # Функция для запуска обработки всех файлов по нажатию кнопки
@@ -36,6 +38,7 @@ def on_process_button_click():
         # Обработка с опцией ОЭН
         file_count = process_all_files(directory, installation_name, control_date, selected_option)
         messagebox.showinfo("УСПЕХ!", f"Обработка завершена успешно! \n Опция ОЭН была выбрана. \n Обработано {file_count} файлов.")
+        
         root.quit()
 
 

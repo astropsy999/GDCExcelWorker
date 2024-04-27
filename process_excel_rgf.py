@@ -61,7 +61,6 @@ def process_excel_file_rgf(file_path, installation_name, control_date):
         print(f'Количество строк, где была установлена формула в столбец A: {changed_rows_count}')
 
     except KeyError:
-        # print(f'{bcolors.FAIL}Ошибка: Лист "Диагностическая карта" отсутствует в файле {file_name}.{bcolors.ENDC}')
         raise KeyError(f'Лист "Диагностическая карта" отсутствует в файле')
     # Сохраняем файл, обрабатывая возможные ошибки
     try:
