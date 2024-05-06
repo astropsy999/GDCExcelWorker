@@ -37,6 +37,10 @@ def process_excel_file_oen(file_path, installation_name):
             start_row = find_table_start(sheet)
             end_row = find_table_end(sheet)
             
+            if(start_row is None or end_row is None):
+                print(f'{bcolors.FAIL}Ошибка: Не удалось обнаружить начало или конец интервала для вставки данных {file_path}.{bcolors.ENDC}')
+                raise KeyError
+            
             # Вставляем новый столбец в диапазоне строк
             col_num = 'B'
             workbook.save(file_path)

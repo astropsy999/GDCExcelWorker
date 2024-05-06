@@ -33,7 +33,7 @@ def process_all_files(directory, installation_name, control_date, option):
             
         except KeyError as e:
             skipped_files.append(file_name)
-            print(f'{bcolors.FAIL}В файле {file_name} не обнаружен необходимый лист и он будет пропущен!{bcolors.ENDC}')
+            print(f'{bcolors.FAIL}В файле {file_name} произошла какая-то ошибка и он будет пропущен!{bcolors.ENDC}')
             continue
 
     # Логирование итогов
