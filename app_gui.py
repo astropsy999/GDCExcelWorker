@@ -4,8 +4,7 @@ from datetime import datetime
 import os
 import logging
 from excel_processing import process_all_files
-from handle_processed_files import delete_files
-from utils import get_excel_files
+
 
 
 # Функция для запуска обработки всех файлов по нажатию кнопки
@@ -36,7 +35,7 @@ def on_process_button_click():
         else: 
             messagebox.showinfo("УСПЕХ!", f"Обработка завершена успешно! \n Опция РГФ была выбрана. \n Обработано {file_count} файлов. \n")
         if skipped_files:
-            messagebox.showwarning("ПРОПУЩЕНЫ!", f"Следующие файлы были пропущены:\n{', '.join(skipped_files)}")
+            messagebox.showwarning("ПРОПУЩЕНЫ!", f"{', \n'.join(skipped_files)}")
         root.quit()
 
     elif selected_option == "OEN":
@@ -47,7 +46,7 @@ def on_process_button_click():
         else:
             messagebox.showinfo("УСПЕХ!", f"Обработка завершена успешно! \n Опция ОЭН была выбрана. \n Обработано {file_count} файлов. \n")
         if skipped_files:
-            messagebox.showwarning("ПРОПУЩЕНЫ!", f"Следующие файлы были пропущены:\n{', '.join(skipped_files)}")
+            messagebox.showwarning("ПРОПУЩЕНЫ!", f"{', \n '.join(skipped_files)}")
         root.quit()
 
     else:
@@ -55,9 +54,17 @@ def on_process_button_click():
         messagebox.showinfo("Информация", "Опции РГФ и ОЭН не выбраны. Обработано 0 файлов.")
         logging.info('Опции РГФ и ОЭН не выбраны. Обработано 0 файлов.')
         root.quit()
+        
+app_open = False
 
 def run_app():
-    global root, installation_name_entry, control_date_entry, option_var
+    global root, installation_name_entry, control_date_entry, option_var, app_open
+    
+    if(app_open):
+        messagebox.showwarning("Предупреждение", "Приложение уже открыто. Вы уверены, что хотите открыть еще один экземпляр?")
+        return
+    
+    app_open = True
 
     root = tk.Tk()
     root.title("GDC Excel Worker")

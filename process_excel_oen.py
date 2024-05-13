@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from plistlib import InvalidFileException
 import re
@@ -7,6 +8,7 @@ from helpers import find_table_start, find_table_end
 from insert_column_xlwings import insert_column_after
 from utils import copy_values_and_insert_formula
 from utils import bcolors
+
 
 def process_excel_file_oen(file_path, installation_name):
     workbook = None
@@ -54,7 +56,13 @@ def process_excel_file_oen(file_path, installation_name):
         else:
             # Проверяем значение даты
             date_value = sheet['M5'].value # type: ignore
-            date_str = date_value.strftime('%d.%m.%Y')
+            if isinstance(date_value, datetime):
+                date_str = date_value.strftime('%d.%m.%Y')
+            elif isinstance(date_value, str):
+                date_str = date_value
+            else:
+                raise TypeError("Не удалось определить тип значения даты.")
+            
             pattern = re.compile(r'^\d{2}\.\d{2}\.\d{4}$')
             print(f'Проверка значения даты: {date_value}')
             
