@@ -24,7 +24,7 @@ def process_excel_file_oen(file_path, installation_name):
             
         # Доступ к ячейкам и обработка значений
         try:
-            cell_L5 = sheet['L5']
+            cell_L5 = sheet['L5'] # type: ignore
             value_L5 = cell_L5.value
         except KeyError:
             print(f'{bcolors.FAIL}Ошибка: Не удалось получить доступ к ячейке L5 в файле {file_path}.{bcolors.ENDC}')
@@ -50,22 +50,23 @@ def process_excel_file_oen(file_path, installation_name):
         
         else:
             # Проверяем значение даты
-            date_value = sheet['M5'].value
+            date_value = sheet['M5'].value # type: ignore
+            date_str = date_value.strftime('%d.%m.%Y')
             pattern = re.compile(r'^\d{2}\.\d{2}\.\d{4}$')
             print(f'Проверка значения даты: {date_value}')
             
-            if not pattern.match(date_value):
+            if not pattern.match(date_str):
                 print(f'{bcolors.WARNING}Дата не соответствует формату DD.MM.YYYY!{bcolors.ENDC}')
-                sheet['M5'].value = date_value.replace("г.", "")
+                sheet['M5'].value = date_value.replace("г.", "") # type: ignore
                 print(f'Формат даты изменен!')
 
             # Если L5 значение равно None, проверяем столбец A
-            if sheet.column_dimensions['A'].hidden:
+            if sheet.column_dimensions['A'].hidden: # type: ignore
                 print('Столбец A скрыт!')
-                sheet.column_dimensions['A'].hidden = False
+                sheet.column_dimensions['A'].hidden = False # type: ignore
                 print(f'Показываем столбец A')
 
-                sheet['F7'].value = installation_name
+                sheet['F7'].value = installation_name # type: ignore
                 print(f'Изменено::Технологическая установка (участок): {installation_name}')
                 
                 start_row = find_table_start(sheet)
@@ -74,7 +75,7 @@ def process_excel_file_oen(file_path, installation_name):
                 copy_values_and_insert_formula(sheet, start_row, end_row)
                 
             else:
-                sheet['F7'].value = installation_name
+                sheet['F7'].value = installation_name # type: ignore
                 print(f'Изменено::Технологическая установка (участок): {installation_name}')
                 
                 start_row = find_table_start(sheet)
@@ -91,6 +92,7 @@ def process_excel_file_oen(file_path, installation_name):
         
     finally:
         # Закрываем файл Excel в конце обработки
+        print('workbook: ', workbook)
         workbook.save(file_path)
         workbook.close()
 
