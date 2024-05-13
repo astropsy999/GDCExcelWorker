@@ -1,4 +1,5 @@
 import os
+from zipfile import BadZipFile
 from process_excel_rgf import process_excel_file_rgf
 from process_excel_oen import process_excel_file_oen
 from utils import bcolors
@@ -35,10 +36,14 @@ def process_all_files(directory, installation_name, control_date, option):
             skipped_files.append(file_name)
             print(f'{bcolors.FAIL}В файле {file_name} произошла какая-то ошибка и он будет пропущен!{bcolors.ENDC}')
             continue
+        except BadZipFile as e:
+            skipped_files.append(file_name)
+            print(f'{bcolors.FAIL}Файл {file_name} не может быть открыт, возможно он повржеден и будет пропущен!{bcolors.ENDC}')
+            continue
 
     # Логирование итогов
     print(f'\n{bcolors.OKGREEN}Обработано {processed_count} файлов.{bcolors.ENDC}')
     
     move_processed_files(directory, option, skipped_files)
     
-    return processed_count
+    return processed_count, skipped_files

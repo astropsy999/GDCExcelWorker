@@ -30,17 +30,25 @@ def on_process_button_click():
 
     if selected_option == "RGF":
         # Обработка с опцией РГФ
-        file_count = process_all_files(directory, installation_name, control_date, selected_option)
-        messagebox.showinfo("УСПЕХ!", f"Обработка завершена успешно! \n Опция РГФ была выбрана. \n Обработано {file_count} файлов.")
+        file_count, skipped_files = process_all_files(directory, installation_name, control_date, selected_option)
+        if file_count == 0:
+            messagebox.showwarning("Предупреждение", "Нет файлов для обработки")
+        else: 
+            messagebox.showinfo("УСПЕХ!", f"Обработка завершена успешно! \n Опция РГФ была выбрана. \n Обработано {file_count} файлов. \n")
+        if skipped_files:
+            messagebox.showwarning("ПРОПУЩЕНЫ!", f"Следующие файлы были пропущены:\n{', '.join(skipped_files)}")
         root.quit()
 
     elif selected_option == "OEN":
         # Обработка с опцией ОЭН
-        file_count = process_all_files(directory, installation_name, control_date, selected_option)
-        messagebox.showinfo("УСПЕХ!", f"Обработка завершена успешно! \n Опция ОЭН была выбрана. \n Обработано {file_count} файлов.")
-        
+        file_count, skipped_files = process_all_files(directory, installation_name, control_date, selected_option)
+        if file_count == 0:
+            messagebox.showwarning("Предупреждение", "Нет файлов для обработки")
+        else:
+            messagebox.showinfo("УСПЕХ!", f"Обработка завершена успешно! \n Опция ОЭН была выбрана. \n Обработано {file_count} файлов. \n")
+        if skipped_files:
+            messagebox.showwarning("ПРОПУЩЕНЫ!", f"Следующие файлы были пропущены:\n{', '.join(skipped_files)}")
         root.quit()
-
 
     else:
         # Сообщение о том, что ни одна опция не выбрана

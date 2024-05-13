@@ -1,5 +1,7 @@
 import os
+from plistlib import InvalidFileException
 import re
+from zipfile import BadZipFile
 from openpyxl import load_workbook
 from helpers import find_table_start, find_table_end
 from insert_column_xlwings import insert_column_after
@@ -7,6 +9,7 @@ from utils import copy_values_and_insert_formula
 from utils import bcolors
 
 def process_excel_file_oen(file_path, installation_name):
+    workbook = None
     try:
         # Открываем файл Excel
         workbook = load_workbook(file_path)
@@ -86,14 +89,21 @@ def process_excel_file_oen(file_path, installation_name):
             # Сохраняем файл с обработанными данными
             workbook.save(file_path + '_oen.xlsx')
             print(f'Файл успешно сохранен: {file_path}')
+            
+    
 
     except KeyError as e:
          raise KeyError(f'{bcolors.FAIL}Ошибка: {e}{bcolors.ENDC}')
+     
+    except (PermissionError, OSError, InvalidFileException) as e:
+        print(f'{bcolors.FAIL}Ошибка при открытии или работе с файлом: {e}{bcolors.ENDC}')
         
+    except BadZipFile:
+        raise BadZipFile(f'{bcolors.FAIL}Ошибка: Файл {file_path} не является файлом Excel или поврежден.{bcolors.ENDC}')
     finally:
         # Закрываем файл Excel в конце обработки
-        print('workbook: ', workbook)
-        workbook.save(file_path)
-        workbook.close()
+        if workbook is not None:
+            workbook.save(file_path)
+            workbook.close()
 
     return
