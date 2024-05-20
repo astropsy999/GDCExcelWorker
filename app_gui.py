@@ -12,6 +12,9 @@ def on_process_button_click():
     # Получаем введенные пользователем данные Entry
     installation_name = installation_name_entry.get()
     control_date = control_date_entry.get()
+    
+    # Переименовываем xls файлы в xlsx
+   
 
     # Проверяем, какую опцию выбрал пользователь (РГФ или ОЭН)
     selected_option = option_var.get()

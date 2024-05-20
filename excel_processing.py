@@ -3,12 +3,17 @@ from zipfile import BadZipFile
 from process_excel_rgf import process_excel_file_rgf
 from process_excel_oen import process_excel_file_oen
 from utils import bcolors
-from handle_processed_files import move_processed_files
+from handle_processed_files import move_processed_files, convert_xls_to_xlsx
 from utils import get_excel_files
+from pathlib import Path
 
 
 # Объединенная функция для обработки всех файлов Excel в папке
 def process_all_files(directory, installation_name, control_date, option):
+    
+    path_dir = Path(directory)
+    convert_xls_to_xlsx(path_dir)
+    
     # Получить список файлов Excel
     excel_files = get_excel_files(directory)
     skipped_files = []

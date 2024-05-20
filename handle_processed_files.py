@@ -4,7 +4,20 @@ import time
 from datetime import datetime
 from utils import get_excel_files
 from utils import bcolors
+from pathlib import Path
+import pyexcel as p
 
+def convert_xls_to_xlsx(directory):
+    # Find all XLS files in the directory
+    xls_files = [file for file in directory.glob("*.xls")]
+
+    # Convert each XLS file to XLSX
+    for xls_file in xls_files:
+        xlsx_file = xls_file.with_suffix(".xlsx")
+        p.save_book_as(file_name=str(xls_file), dest_file_name=str(xlsx_file))
+
+
+            
 def create_output_directory():
     """Создает папку для сохранения обработанных файлов."""
     current_date = datetime.now().strftime("%d-%m-%Y")

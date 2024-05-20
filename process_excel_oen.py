@@ -8,6 +8,7 @@ from helpers import find_table_start, find_table_end
 from insert_column_xlwings import insert_column_after
 from utils import copy_values_and_insert_formula
 from utils import bcolors
+import xlrd
 
 
 def process_excel_file_oen(file_path, installation_name):

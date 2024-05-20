@@ -29,7 +29,7 @@ def find_process_using_file(file_path):
 
 # Функция для получения списка всех файлов Excel в папке
 def get_excel_files(directory):
-    excel_files = [file for file in os.listdir(directory) if file.lower().endswith(".xlsx")]
+    excel_files = [file for file in os.listdir(directory) if file.lower().endswith((".xlsx"))]
     return excel_files
 
 def move_files(src_directory, dst_directory, file_list, skipped_files, option):
