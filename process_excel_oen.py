@@ -113,6 +113,5 @@ def process_excel_file_oen(file_path, installation_name):
         # Закрываем файл Excel в конце обработки
         if workbook is not None:
             workbook.save(file_path)
-            workbook.close()
 
     return

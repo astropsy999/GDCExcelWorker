@@ -6,6 +6,18 @@ from utils import get_excel_files
 from utils import bcolors
 from pathlib import Path
 import pyexcel as p
+import psutil
+
+def is_file_in_use(file_path):
+    """Проверяет, используется ли файл каким-либо процессом, пытаясь открыть его в эксклюзивном режиме."""
+    try:
+        # Открываем файл в режиме эксклюзивного доступа
+        file_handle = os.open(file_path, os.O_RDONLY | os.O_EXCL)
+        os.close(file_handle)
+        return False
+    except OSError:
+        # Если файл уже используется, возникает ошибка
+        return True
 
 def convert_xls_to_xlsx(directory):
     # Find all XLS files in the directory
@@ -16,7 +28,6 @@ def convert_xls_to_xlsx(directory):
         xlsx_file = xls_file.with_suffix(".xlsx")
         p.save_book_as(file_name=str(xls_file), dest_file_name=str(xlsx_file))
 
-
             
 def create_output_directory():
     """Создает папку для сохранения обработанных файлов."""
@@ -26,14 +37,16 @@ def create_output_directory():
         os.makedirs(output_directory)
     return output_directory
 
-def move_files_to_directory(file_list, src_directory, dst_directory):
+def move_files_to_directory(file_list, src_directory, dst_directory, retries=3, delay=2):
     """Перемещает файлы из исходной директории в конечную."""
     for file_name in file_list:
         src_file_path = os.path.join(src_directory, file_name)
         dst_file_path = os.path.join(dst_directory, file_name)
-        shutil.move(src_file_path, dst_file_path)
+        if not is_file_in_use(src_file_path):
+            shutil.move(src_file_path, dst_file_path)
 
 def delete_files(file_list, src_directory, max_retries=2, delay=1):
+    
     """Удаляет файлы из исходной директории с попытками и задержкой."""
     for file_name in file_list:
         src_file_path = os.path.join(src_directory, file_name)
@@ -61,6 +74,7 @@ def delete_files(file_list, src_directory, max_retries=2, delay=1):
             print(f'Не удалось удалить файл {file_name} после {max_retries} попыток.')
 
 def move_processed_files(directory, option, skipped_files):
+    """Перемещает обработанные файлы в выходную директорию."""
     output_directory = create_output_directory()
     
     if option == "RGF":
@@ -71,7 +85,6 @@ def move_processed_files(directory, option, skipped_files):
         file_list = [file_name for file_name in get_excel_files(directory) if file_name not in skipped_files]
         oen_files = [file_name for file_name in file_list if file_name.endswith('_oen.xlsx')]
         other_files = [file_name for file_name in file_list if not file_name.endswith('_oen.xlsx') and file_name not in skipped_files]
-
         move_files_to_directory(oen_files, directory, output_directory)
         delete_files(other_files, directory)
     
