@@ -79,8 +79,8 @@ def is_row_empty(row_index):
 
 def copy_values_and_insert_formula(sheet, start_row, end_row):
     """ Функция копирует значения из столбца B в столбец A в диапазоне строк.
-        А затем в столбец B вставляет формулу."""
-   
+        Затем в столбец B вставляет значения, полученные из вычисления формулы."""
+    
     # Диапазон строк, в котором вы хотите скопировать значения
     start = start_row + 4
 
@@ -94,16 +94,22 @@ def copy_values_and_insert_formula(sheet, start_row, end_row):
 
     print(f'Значения из столбца B скопированы в столбец A в диапазоне от {start} до {end_row}')
 
-    # Вставляем формулу в столбец B
+    # Вычисляем значения и вставляем их в столбец B
     for row in range(start, end_row + 1):
+        # Чтение значений из столбцов A и C
+        value_a = sheet.cell(row=row, column=1).value
+        value_c = sheet.cell(row=row, column=3).value
         
-        # Создаем формулу для объединения значений из столбца A и C
-        formula = f'=CONCATENATE(A{row}, ".", C{row}, ".")'
-        
-        # Вставляем формулу в ячейку в столбце B
-        sheet.cell(row=row, column=2).value = formula
+        # Вычисляем значение, которое должна была вернуть формула
+        if value_a is not None and value_c is not None:
+            computed_value = f'{value_a}.{value_c}.'
+        else:
+            computed_value = None
 
-    print(f'Формула вставлена в столбец B в диапазоне от {start} до {end_row}')
+        # Вставляем вычисленное значение в ячейку в столбце B
+        sheet.cell(row=row, column=2).value = computed_value
+
+    print(f'Вычисленные значения вставлены в столбец B в диапазоне от {start} до {end_row}')
     
 
 class bcolors:

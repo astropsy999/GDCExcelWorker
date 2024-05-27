@@ -57,8 +57,9 @@ def process_excel_file_rgf(file_path, installation_name, control_date):
 
             # Проверка на пустые значения B и C
             if b_value is not None and c_value is not None:
-                formula = f'=CONCATENATE(B{row}, ".", C{row}, ".")'
-                diagnostics_sheet[f'A{row}'].value = formula # type: ignore
+                # formula = f'=CONCATENATE(B{row}, ".", C{row}, ".")'
+                computed_value = f'{b_value}.{c_value}.'
+                diagnostics_sheet[f'A{row}'].value = computed_value # type: ignore
                 changed_rows_count += 1
 
         print(f'Количество строк, где была установлена формула в столбец A: {changed_rows_count}')
