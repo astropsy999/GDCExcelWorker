@@ -15,7 +15,7 @@ def process_all_files(directory, installation_name, control_date, option):
     convert_xls_to_xlsx(path_dir)
     
     # Получить список файлов Excel
-    excel_files = get_excel_files(directory)
+    excel_files, xls_files = get_excel_files(directory)
     skipped_files = []
     
 

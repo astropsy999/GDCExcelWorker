@@ -98,12 +98,9 @@ def process_excel_file_oen(file_path, installation_name):
             # Сохраняем файл с обработанными данными
             workbook.save(file_path + '_oen.xlsx')
             print(f'Файл успешно сохранен: {file_path}')
-            
-    
 
     except KeyError as e:
-         raise KeyError(f'{bcolors.FAIL}Ошибка: {e}{bcolors.ENDC}')
-     
+        raise KeyError(f'{bcolors.FAIL}Ошибка: {e}{bcolors.ENDC}')
     except (PermissionError, OSError, InvalidFileException) as e:
         print(f'{bcolors.FAIL}Ошибка при открытии или работе с файлом: {e}{bcolors.ENDC}')
         
@@ -113,5 +110,4 @@ def process_excel_file_oen(file_path, installation_name):
         # Закрываем файл Excel в конце обработки
         if workbook is not None:
             workbook.save(file_path)
-
     return

@@ -6,7 +6,6 @@ from utils import get_excel_files
 from utils import bcolors
 from pathlib import Path
 import pyexcel as p
-import psutil
 
 def is_file_in_use(file_path):
     """Проверяет, используется ли файл каким-либо процессом, пытаясь открыть его в эксклюзивном режиме."""
@@ -78,13 +77,23 @@ def move_processed_files(directory, option, skipped_files):
     output_directory = create_output_directory()
     
     if option == "RGF":
-        file_list = [file_name for file_name in get_excel_files(directory) if file_name not in skipped_files]
+        excel_files, xls_files = get_excel_files(directory)
+        file_list = [file_name for file_name in excel_files if file_name not in skipped_files]
         move_files_to_directory(file_list, directory, output_directory)
     
     elif option == "OEN":
-        file_list = [file_name for file_name in get_excel_files(directory) if file_name not in skipped_files]
+        excel_files, xls_files = get_excel_files(directory)
+        
+        # Объединение списков excel_files и xls_files
+        all_files = excel_files + xls_files
+        
+        # Фильтрация списка файлов
+        file_list = [file_name for file_name in all_files if file_name not in skipped_files]
         oen_files = [file_name for file_name in file_list if file_name.endswith('_oen.xlsx')]
         other_files = [file_name for file_name in file_list if not file_name.endswith('_oen.xlsx') and file_name not in skipped_files]
+        
+        print('other_files: ', other_files)
+        
         move_files_to_directory(oen_files, directory, output_directory)
         delete_files(other_files, directory)
     

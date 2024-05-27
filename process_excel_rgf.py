@@ -6,7 +6,7 @@ from utils import bcolors
 def process_excel_file_rgf(file_path, installation_name, control_date):
     # Пытаемся загрузить файл, обрабатывая возможные ошибки
     try:
-        workbook = load_workbook(file_path)
+        workbook = load_workbook(file_path, read_only=False)
     except InvalidFileException:
         print(f'{bcolors.FAIL}Ошибка: файл {file_path} не является допустимым файлом Excel.{bcolors.ENDC}')
         return
